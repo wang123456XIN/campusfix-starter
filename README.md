@@ -65,3 +65,6 @@ campusfix-starter/
     ├── conftest.py      # pytest fixture（临时数据库）
     └── test_app.py      # 示例测试（含 1 个故意失败）
 ```
+## 小组 Sprint 1 计划
+
+- [ ] 新增工单状态筛选功能（Issue #1）
