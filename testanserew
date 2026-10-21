@@ -1,0 +1,120 @@
+⚠️ 进考场坐下第一件事：
+
+打开 Docker Desktop（确保左下角小鲸鱼变绿）。
+
+打开 VS Code，打开终端（快捷键 Ctrl + `）。
+
+确认终端路径在你的项目文件夹里（比如 ...\campusfix-starter>）。
+
+🎯 第 1 步：Git 分支与改代码（4分）
+在 VS Code 终端敲：
+
+powershell
+git switch main
+git switch -c exam/20251967
+改代码：
+左侧打开 templates/index.html，按 Ctrl+F 搜 CampusFix，把大标题改成 CampusFix-20251967，按 Ctrl+S 保存。
+
+回终端提交：
+
+powershell
+git add -A
+git commit -m "feat: 更新首页标题"
+📸 截图 1：截下终端里显示 1 file changed 的画面。
+
+🎯 第 2 步：Linux 验证（2分）
+在终端敲：
+
+powershell
+grep -n "CampusFix-20251967" templates/index.html
+📸 截图 2：截下终端里搜出学号的画面。
+
+🎯 第 3 步：改测试跑绿（4分）
+改测试：
+打开 tests/test_pages.py，找到 assert "CampusFix" in ...，改成 assert "CampusFix-20251967" in ...，保存。
+
+回终端敲：
+
+powershell
+python -m pytest -v
+📸 截图 3：必须截到全绿 PASSED 的画面。⚠️绝不写假断言，查到0分！
+
+🎯 第 4 步：推代码开 PR（4分）
+在终端敲：
+
+powershell
+git add -A
+git commit -m "test: 更新测试断言"
+git push -u origin exam/20251967
+去 GitHub 网页：
+刷新仓库，点 Compare & pull request -> Create pull request。等出现绿勾。
+📸 截图 4：截下 PR 页面和绿勾。
+(💡保底：如果机房打不开网页，直接截终端 git push 成功的画面交差)
+
+🎯 第 5 步：Docker 跑起来（4分）
+在终端敲（注意端口）：
+
+powershell
+docker build -t campusfix-exam .
+docker run -d -p 5001:5000 campusfix-exam
+去浏览器：
+打开 http://localhost:5001，看到带学号标题。
+📸 截图 5：截下带 localhost:5001 和学号标题的网页画面。
+
+🎯 第 6 步：收尾交卷（2分）
+去 GitHub 合并 PR（点 Merge pull request）。
+
+把 5 张图贴进 Word 上传。
+提交说明复制这段：
+
+本次期末考查完成全链路微交付。本地切 exam/20251967 分支改标题，跑通所有 pytest（全绿）。推代码并开 PR 验证 CI。最后 Docker 构建映射 5001 端口访问成功。走通 Git -> 测试 -> CI -> Docker 闭环。
+
+🗣️ 第二部分：口试万能答题模板（10分）
+老师抽你回答时，请严格套用这个公式：
+“老师您好，关于这个问题，我的理解是（是什么）。在实验操作中，我们通常是（怎么用）。之所以这么做，主要是为了（解决什么问题/为什么）。”
+
+🎯 必背题库：
+Git/协作
+
+G2. PR 和 Issue 什么关系？Fixes #N 是什么？
+
+答：Issue 是任务/Bug，PR 是修复代码。在 PR 描述里写 Fixes #编号，合并时就会自动关掉对应的 Issue。这么做是为了实现缺陷的自动化闭环，提高协作效率。
+
+Linux/服务器
+
+L1. ls -l 第一列10个字符什么意思？chmod 755 是什么？
+
+答：这是文件权限位。755 代表拥有者可读写执行，其他人可读和执行。这么做是为了保护文件安全和系统稳定。
+
+L3. UFW 为什么先 allow ssh 再 enable？
+
+答：UFW 是防火墙。必须先放行 22 端口再开启。如果不先放行，一旦开启防火墙就会把我们的 SSH 连接锁死在外面。
+
+测试/CI
+
+T1. 等价类和边界值是什么？
+
+答：测试用例设计方法。等价类是分有效/无效各测一个代表值；边界值是测临界点（如 19/20/21 字符）。这么做是用最少的用例抓出最多的 Bug。
+
+C1. CI 红了为什么不能合？
+
+答：CI 是持续集成门禁。CI 红了说明新代码有 Bug 或测试没过。必须修好变绿才能合并，这样是为了保证主分支的代码永远是可以运行的干净代码。
+
+C2. Secrets 是什么？
+
+答：是 GitHub 的加密环境变量。在代码里用 ${{ secrets.名字 }} 调用。这么做是为了防止密码和 Token 明文写在代码里泄露。
+
+Docker
+
+D1. 镜像 vs 容器？
+
+答：镜像是只读的模板（模具），容器是跑起来的实例（产品）。用 docker run 把镜像跑成容器。因为镜像不可变，所以能保证在任何机器上的环境完全一致。
+
+D2. 为什么用 Volume？down 和 down -v 区别？
+
+答：Volume 是数据卷。把数据存在容器外。这样即使删了容器，数据还在。down 只删容器，down -v 连数据卷一起删（数据彻底丢失）。
+
+D3. tag 为什么重要？
+
+答：tag 是镜像的版本号。出问题时，可以用 docker pull ...:v1 一键切回旧版本（回滚）。没有 tag 就无法区分版本，无法回滚。
+
