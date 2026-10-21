@@ -3,7 +3,7 @@ from app import validate_ticket, app
 
 def test_title_too_long():
     error = validate_ticket("A" * 21, "A101")
-    assert error == "标题不能超过20个字符"
+    assert error == "故意写错"
 def test_post_title_too_long():
     client = app.test_client()
     resp = client.post("/tickets/new", data={
