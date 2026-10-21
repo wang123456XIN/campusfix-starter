@@ -14,21 +14,18 @@ DATABASE = Path(os.environ.get("DATABASE_PATH", INSTANCE_DIR / "campusfix.db"))
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-secret")
 
-# 基本日志配置：输出到 stdout，格式含时间与级别
+# 基本日志配置
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
 )
 logger = logging.getLogger("campusfix")
 
-
 def get_db():
-    """获取当前请求的数据库连接（Flask g 对象缓存）"""
     if "db" not in g:
         g.db = sqlite3.connect(DATABASE)
         g.db.row_factory = sqlite3.Row
     return g.db
-
 
 @app.teardown_appcontext
 def close_db(exc):
@@ -36,12 +33,9 @@ def close_db(exc):
     if db is not None:
         db.close()
 
-
 @app.route("/health")
 def health():
-    """健康检查接口：Docker/CI/部署验证用"""
     return {"status": "ok"}
-
 
 @app.route("/")
 def index():
@@ -50,7 +44,6 @@ def index():
         "SELECT id, title, room, status, created_at FROM tickets ORDER BY created_at DESC"
     ).fetchall()
     return render_template("index.html", tickets=tickets)
-
 
 @app.route("/tickets/<int:ticket_id>")
 def ticket_detail(ticket_id):
@@ -62,24 +55,34 @@ def ticket_detail(ticket_id):
         return render_template("404.html"), 404
     return render_template("detail.html", ticket=ticket)
 
+# 这是你课14写的函数，保留在这里
+def validate_ticket(title, room):
+    if len(title) > 20:
+        return "标题不能超过20个字符"
+    return None
 
+# 这是唯一的 create_ticket 路由
 @app.route("/tickets/new", methods=["GET", "POST"])
 def create_ticket():
     if request.method == "POST":
         title = request.form.get("title", "").strip()
         room = request.form.get("room", "").strip()
         description = request.form.get("description", "").strip()
+
+        # 校验逻辑
+        error = validate_ticket(title, room)
+        if error:
+            return error, 400
+
         db = get_db()
         db.execute(
             "INSERT INTO tickets (title, room, description) VALUES (?, ?, ?)",
-            (title, description, room),
+            (title, room, description),
         )
         db.commit()
         logger.info("created ticket: %s (%s)", title, room)
         return redirect(url_for("index"))
     return render_template("new.html")
 
-
 if __name__ == "__main__":
-    # 仅开发用途；生产部署使用 gunicorn（第11次课）
     app.run(host="127.0.0.1", port=5000, debug=True)
