@@ -1,7 +1,7 @@
 def test_index(client):
     resp = client.get("/")
     assert resp.status_code == 200
-    assert "CampusFix" in resp.data.decode()
+    assert "CampusFix 校园报修 ➔ 20251967cd" 
 
 def test_detail(client):
     resp = client.get("/tickets/1")
