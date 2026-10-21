@@ -12,24 +12,7 @@ jobs:
           python-version: '3.13'
       - name: 安装依赖
         run: pip install -r requirements.txt
-        name: CI
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-      - name: 安装依赖
-        run: pip install -r requirements.txt
       - name: 初始化数据库
         run: python init_db.py
       - name: 跑测试
-        run: pytest
-      - name: 跑测试
-    
         run: pytest
