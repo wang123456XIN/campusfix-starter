@@ -1,0 +1,96 @@
+ 
+第1步：打开项目
+1. 打开 VS Code。
+2. 文件 → 打开文件夹 → 选 C:\Users\w\Downloads\CampusFix-起始项目\campusfix-starter。
+3. 顶部菜单 终端 → 新建终端（或按 Ctrl+`）。
+4. 底部弹出黑窗口，确认路径末尾是 campusfix-starter>。
+(如果路径不对，敲 cd campusfix-starter) 
+第2步：建考试分支（4分）
+ 
+逐行敲，每敲一行按回车：
+git switch main
+‌
+git switch -c exam/20251967
+ 
+(如果报错 already exists 不用管，直接往下走。看到左下角变成 exam/20251967 就对了)
+ 
+第3步：改首页标题（4分里的一部分）
+1. 左边点开 templates 文件夹，双击打开 index.html。
+2. 按 Ctrl+F 搜 CampusFix。
+3. 找到 <h1> 那一行（大概第17行），把里面的字改成：CampusFix-20251967。
+4. 按 Ctrl+S 保存。 
+第4步：提交代码（截图1）
+ 
+回终端逐行敲：
+git add -A
+‌
+git commit -m "feat: 期末考查-更新首页标题"
+ 
+📸 截图1：截终端里显示 1 file changed 的画面。
+ 
+第5步：Linux验证（2分，截图2）
+ 
+终端敲：
+grep -n "CampusFix-20251967" templates/index.html
+ 
+📸 截图2：截终端里搜出你学号标题的画面。
+ 
+第6步：改测试（4分）
+1. 左边点开 tests 文件夹，打开有 assert "CampusFix" 那行的文件（通常是 test_pages.py）。
+2. 把这行改成：
+assert "CampusFix-20251967" in resp.data.decode()
+3. 按 Ctrl+S 保存。
+⚠️ 死命令：绝对不能写 assert True 假测试，查到 0 分！ 
+第7步：跑测试（截图3）
+ 
+终端先敲这句激活环境：
+.venv\Scripts\activate
+ 
+(看到前面出现 (.venv) 就说明激活了)
+ 
+再敲测试命令：
+python -m pytest -v
+ 
+📸 截图3：必须截到全绿 PASSED 的画面。
+ 
+第8步：推到GitHub（4分）
+ 
+逐行敲：
+git add -A
+‌
+git commit -m "test: 更新断言"
+‌
+git push -u origin exam/20251967
+ 
+第9步：开PR等CI绿（截图4）
+1. 浏览器打开你的 GitHub 仓库。
+2. 点黄色提示条 Compare & pull request -> 写个标题 -> Create pull request。
+3. 等下面出现绿勾 All checks have passed。
+📸 截图4：截 PR 页面+绿勾。
+(保底：如果网页打不开，直接截终端 git push 成功画面) 
+第10步：Docker build（4分）
+ 
+(此时后台的 Docker Desktop 应该早就绿了)
+终端敲（注意最后有个点）：
+docker build -t campusfix-exam .
+ 
+(等它跑完 FINISHED)
+ 
+第11步：Docker run 与验证（截图5）
+ 
+终端敲：
+docker run -d -p 5001:5000 campusfix-exam
+ 
+(如果报错端口被占，先敲 docker rm -f $(docker ps -aq) 再重新敲上面那行)
+ 
+浏览器打开：http://localhost:5001
+📸 截图5：截带 localhost:5001 和学号标题的网页画面。
+ 
+第12步：收尾交卷（2分）
+1. 回 GitHub 的 PR 页面，点 Merge pull request -> Confirm merge。
+2. 把 5 张截图塞进 Word 交卷。 
+ 
+⏱️ 时间不够怎么办？
+ 
+先做：2、3、4、6、7、8、9、10、11、12步（拿满 16 分）。第5步（grep）如果没时间就跳过。
+ 
